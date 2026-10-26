@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#edf4ed" />
+  <meta name="description" content="Everything in Its Place — a cozy drag-and-drop organizing game." />
+  <title>Everything in Its Place — A Little Game About Putting Things Away</title>
+  <style>
+:root{color-scheme:light;--bg:#edf4ed;--ink:#203c36;--secondary:#75847d;--green:#23594d;--green-deep:#183f39;--mint:#c8e5cd;--yellow:#f5c976;--cream:#fffcf5;--coral:#d9846b;--radius:23px}
+*{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 5% 20%,#f7faef 0 14%,transparent 38%),radial-gradient(circle at 95% 6%,#dceadb 0,transparent 38%),var(--bg);font-family:ui-rounded,"Avenir Next",Avenir,"Trebuchet MS",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #f5b54c;outline-offset:4px}button:disabled{cursor:default}svg{display:block} [hidden]{display:none!important}
+.page-shell{width:min(1330px,calc(100% - 60px));margin:auto}.site-header{height:104px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d7e2d7}.brand{display:inline-flex;align-items:center;gap:14px;color:var(--ink);text-decoration:none}.brand-mark{display:grid;grid-template-columns:repeat(2,16px);gap:4px;transform:rotate(-9deg)}.brand-mark i{width:16px;height:16px;border-radius:5px;background:#35806d}.brand-mark i:nth-child(2){background:#eeaf62}.brand-mark i:nth-child(3){background:#f1cd81}.brand-mark i:nth-child(4){background:#82ad94}.brand-words{display:flex;flex-direction:column;line-height:1.07}.brand-words strong{font-size:10px;letter-spacing:2.6px}.brand-words small{font-weight:800;font-size:22px;letter-spacing:-.9px}.brand-dot{color:#e49f66}.header-actions{display:flex;align-items:center;gap:12px}.save-status{color:#7a9684;font-size:12px;display:flex;align-items:center;gap:8px;margin-right:16px}.status-pip{height:7px;width:7px;background:#65aa7d;border-radius:50%}.icon-button{height:39px;width:39px;border-radius:14px;border:1px solid #d9e6d9;background:#f9fcf7;color:var(--green);font-weight:800;font-size:18px;display:grid;place-items:center;transition:transform .15s,background .15s}.icon-button:hover{transform:translateY(-2px);background:white}.icon-button svg{height:20px;width:20px}.sound-button[aria-pressed="false"]{opacity:.5}.welcome{padding:35px 0 30px;display:flex;justify-content:space-between;gap:20px;align-items:center}.eyebrow{font-size:10px;letter-spacing:2.4px;font-weight:900;color:#6b937a}.tiny-sparkle{font-size:17px;color:#dfa45e;margin-right:7px}.welcome h1{margin:10px 0 7px;font-size:clamp(28px,3.2vw,43px);letter-spacing:-1.7px;line-height:1.18;font-weight:850}.welcome h1 em{font-family:Georgia,serif;color:#3e836c;font-weight:400;white-space:nowrap}.welcome p{font-size:14px;margin:0;color:#7a8b81;line-height:1.7}.welcome-stamp{flex-shrink:0;width:100px;height:100px;border:1.5px dashed #a9c3b0;color:#7ba78a;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;transform:rotate(13deg);gap:5px}.welcome-stamp span{font-size:9px;letter-spacing:1.3px;font-weight:800}.welcome-stamp strong{font-family:Georgia,serif;font-size:27px;font-weight:400;color:#5e8d78}
+.level-summary{padding:19px 26px;border:1px solid #d7e4d8;border-radius:20px;background:#f8fbf6;display:flex;align-items:center;justify-content:space-between;gap:28px;margin-bottom:20px;box-shadow:0 5px 25px #28473608}.level-heading{display:flex;align-items:center;gap:16px}.level-number{height:53px;width:53px;flex-shrink:0;border-radius:15px;background:#ddefdc;color:#347b62;font-weight:850;font-size:24px;display:grid;place-items:center}.level-heading h2{font-size:20px;margin:3px 0 0;line-height:1.2;letter-spacing:-.5px}.level-heading p{font-size:11px;color:#87958d;margin:5px 0 0}.progress-wrap{width:min(360px,37%)}.progress-line{display:flex;justify-content:space-between;margin-bottom:10px;gap:15px;font-size:12px}.progress-line strong{font-weight:800}.progress-line span{color:#78a089;font-weight:800}.progress-track{height:10px;border-radius:30px;overflow:hidden;background:#e2ece0}.progress-fill{height:100%;background:linear-gradient(90deg,#72bc89,#339772);border-radius:30px;width:0;transition:width .4s cubic-bezier(.2,.9,.2,1)}
+.game-layout{display:grid;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr);gap:18px;align-items:stretch}.panel{border-radius:var(--radius);border:1px solid #d9e6d8;box-shadow:0 10px 28px #2d473410;min-width:0}.workbench{background:#fffdf8;padding:23px 23px 15px;display:flex;flex-direction:column}.tool-panel{background:#f8fbf6;padding:23px 22px 15px;display:flex;flex-direction:column}.panel-title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.panel-overline{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:2px;color:#99a99e;font-weight:850}.little-circle{height:7px;width:7px;border-radius:50%}.little-circle.orange{background:#efa56d}.little-circle.green{background:#67ac86}.panel-title-row h3{font-size:25px;letter-spacing:-.65px;margin:6px 0 0;line-height:1.2}.subtle-pill{border-radius:20px;background:#f6ecdf;color:#a8855d;padding:8px 11px;font-size:11px;font-weight:850;white-space:nowrap}.panel-hint{color:#9b9e96;font-size:12px;margin:9px 0 19px;line-height:1.5}.bench-inner{border:1px solid #eee8db;border-radius:17px;flex:1;min-height:595px;padding:13px;background-color:#f9f4e9;background-image:radial-gradient(#e6dfd1 1.1px,transparent 1.1px);background-size:20px 20px;position:relative;overflow:hidden}.bench-inner:before,.bench-inner:after{content:"✳";position:absolute;color:#ebddc2;font-size:28px;z-index:0;pointer-events:none}.bench-inner:before{top:5px;right:12px}.bench-inner:after{bottom:7px;left:12px;font-size:21px}.scatter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px 12px;position:relative;z-index:1;align-content:start}.piece{border:1px solid #efe4d4;min-height:103px;position:relative;border-radius:16px;background:#fffdf8;box-shadow:0 5px 0 #ded3c220,0 7px 15px #5e4d2710;padding:10px 5px 8px;color:#51665d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transform:rotate(var(--tilt,0deg));touch-action:none;user-select:none;-webkit-user-select:none;transition:transform .15s,box-shadow .15s,border-color .15s;background-color:#fffdfa;z-index:1}.piece:hover{transform:rotate(0deg) translateY(-3px);box-shadow:0 10px 18px #5e4d271c}.piece:active{cursor:grabbing}.piece.is-selected{outline:3px solid #efbe60;outline-offset:0;background:#fff9e9;transform:rotate(0deg) translateY(-3px);z-index:2}.piece .piece-art{width:65px;height:65px;display:grid;place-items:center;pointer-events:none}.piece-art .art-svg{height:65px;width:65px;filter:drop-shadow(0px 3px 1px #35493c16)}.piece-name{font-size:11px;line-height:1.25;font-weight:800;text-align:center;pointer-events:none;white-space:nowrap}.piece-type-count{position:absolute;top:6px;right:8px;color:#c3baaa;font-size:10px;font-weight:750;pointer-events:none}.bench-empty{z-index:1;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:#8b9f8c;background:#f7f4e9}.bench-empty .empty-icon{font-size:80px;color:#91bc9c;line-height:1}.bench-empty strong{font-size:23px;color:#365f51}.bench-empty span{font-size:13px}.bench-foot{padding:14px 2px 0;font-size:11px;color:#aeaa9b;display:flex;align-items:center;justify-content:center;gap:8px}.foot-sparkle{font-size:19px;color:#d5a66b}.small-button{border:1px solid #d5e6d6;border-radius:12px;padding:9px 13px;background:white;color:#3c856a;font-size:12px;font-weight:850}.small-button:hover{background:#e8f5e7}.toolbox-head{margin-bottom:0}
+.cabinet{background:#27574d;padding:14px 13px 12px;border:5px solid #245046;border-radius:18px;box-shadow:inset 0 2px 0 #528273,0 8px 0 #163d34,0 15px 18px #1e3f3530;min-height:548px}.cabinet-lid{display:flex;justify-content:space-between;align-items:center;height:36px;padding:0 13px 12px}.cabinet-badge{color:#b6d3bc;font-size:12px;font-weight:950;letter-spacing:3px}.cabinet-badge span{color:#f4c96d}.cabinet-screws{color:#87a89c;font-size:14px}.cabinet-interior{border-radius:8px;background:#19463f;padding:9px 8px 0;box-shadow:inset 0 3px 8px #0c241d90}.drawer-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.drawer-tab{background:#3e7264;color:#d5eee0;border:1px solid #69a08970;border-radius:8px 8px 3px 3px;padding:9px 5px 12px;min-height:56px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:background .2s,transform .2s}.drawer-tab .drawer-tab-name{font-size:11px;font-weight:800;white-space:nowrap}.drawer-tab .drawer-count{font-size:10px;opacity:.77}.drawer-tab .drawer-handle{width:34px;height:4px;background:#b2d2b8;border-radius:10px;box-shadow:0 2px 1px #254f41}.drawer-tab.is-active{background:#d3e5ca;color:#365d49;border-color:#f9f0cf;transform:translateY(3px);z-index:2}.drawer-tab.is-active .drawer-handle{background:#699c74}.drawer-tab.is-complete:not(.is-active){background:#487f68}.drawer-opening{background:#d3e5ca;border:4px solid #9cba9f;padding:15px 13px 13px;min-height:396px;box-shadow:inset 0 5px 8px #2f483326;border-radius:3px 3px 10px 10px;position:relative}.drawer-label{display:flex;align-items:center;justify-content:space-between;color:#426d52;font-weight:900;font-size:13px;margin-bottom:6px;gap:10px}.drawer-label span{color:#7e9e7b;font-size:10px;letter-spacing:.6px}.drawer-description{margin:0 0 13px;font-size:11px;color:#83a083}.foam-board{background-color:#3e5848;background-image:radial-gradient(#64736355 1px,transparent 1px);background-size:9px 9px;border:5px solid #486950;border-radius:11px;padding:16px 12px;box-shadow:inset 0 5px 12px #162b2080,0 3px 1px #e4f0dc;min-height:285px}.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:stretch}.slot{position:relative;border:2px dashed #748573bb;background:#2f493c;border-radius:15px;min-height:226px;color:#a7bba4;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:13px 4px 10px;gap:5px;transition:border-color .15s,background .15s,transform .15s}.slot:not(.is-filled):hover{border-color:#e8c17d;background:#385446}.slot .art-svg{width:min(92px,100%);height:112px;filter:grayscale(1) brightness(.32) opacity(.5) drop-shadow(0 1px 2px #16241f)}.slot-label{font-size:11px;font-weight:850;color:#9bbaa0;text-align:center}.slot-prompt{font-size:9px;color:#7d9a83;font-weight:700}.slot.is-filled{background:#50755b;border:2px solid #91b69b;cursor:default;box-shadow:inset 0 0 22px #b9deb314}.slot.is-filled .art-svg{filter:drop-shadow(0px 4px 2px #1d302244)}.slot.is-filled .slot-label{color:#e5f5d9}.slot.is-filled .slot-prompt{color:#bad5b9}.slot.is-hinted{animation:targetPulse 1s ease-in-out 3}.slot.is-wrong{animation:slotShake .29s ease-out}.slot-check{position:absolute;top:8px;right:8px;background:#dbf3bf;color:#427854;font-size:13px;font-weight:900;border-radius:50%;display:grid;place-items:center;height:23px;width:23px}
+.bins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.bin{border:3px solid #667d69;background:linear-gradient(#5f7563,#32483c);box-shadow:inset 0 4px 14px #192a2066,0 3px 1px #1f372780;border-radius:9px 9px 20px 20px;min-height:226px;padding:13px 6px;display:flex;flex-direction:column;align-items:center;color:#d5e6d0;position:relative;transition:border-color .2s,background .2s}.bin:hover{border-color:#e8c17d}.bin svg{width:50px;height:50px;filter:drop-shadow(0 3px 2px #1b2e2455)}.bin-title{font-size:11px;font-weight:900;margin-top:6px}.bin-count{font-size:10px;opacity:.7;margin-top:3px}.bin-pieces{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;justify-items:center;gap:0;width:100%;padding-top:7px}.bin-pieces .art-svg{height:46px;width:46px}.bin.is-hinted{animation:targetPulse 1s ease-in-out 3}.bin.is-wrong{animation:slotShake .29s ease-out}.bin.is-complete{border-color:#aada99}.bin-check{position:absolute;top:4px;right:4px;color:#cce9a9;font-size:18px}.cabinet-underlay{height:29px;display:flex;align-items:center;justify-content:center;position:relative}.cabinet-underlay>span{color:#719e87;font-size:8px;letter-spacing:2px;font-weight:900}.cabinet-feet{position:absolute;bottom:-18px;left:12px;right:12px;display:flex;justify-content:space-between}.cabinet-feet i{width:43px;height:10px;background:#1e3e36;border-radius:0 0 4px 4px}.guidance{border-radius:13px;border:1px dashed #c6daca;background:#f0f7ee;display:flex;align-items:center;gap:11px;color:#668370;padding:12px 14px;margin-top:21px;font-size:12px;line-height:1.4;min-height:49px}.guidance-icon{color:#7cb790;font-size:20px;flex-shrink:0}.game-footer{padding:30px 3px 45px;display:flex;align-items:center;justify-content:space-between;gap:15px;color:#96a79a;font-size:10px;font-weight:750;letter-spacing:1.7px}.game-footer span span{color:#cf9483}.game-footer button{border:0;background:transparent;color:#698f75;font-weight:850;font-size:12px;letter-spacing:0}.game-footer button:hover{text-decoration:underline}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#204c40;color:#fff;box-shadow:0 12px 45px #092b2180;border-radius:30px;padding:13px 22px;font-size:13px;font-weight:750;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:min(90vw,440px);text-align:center}.toast.is-visible{opacity:1;transform:translate(-50%,0)}.modal-backdrop{position:fixed;inset:0;background:#132e26a8;z-index:45;display:grid;place-items:center;padding:15px;backdrop-filter:blur(4px)}.modal{background:#fffdf7;border-radius:27px;max-width:460px;width:100%;padding:35px 38px 31px;text-align:center;position:relative;box-shadow:0 28px 80px #071d1980;max-height:min(95vh,850px);overflow:auto}.close-button{position:absolute;right:18px;top:12px;font-size:28px;border:0;color:#9aad9a;background:none}.modal h2{font-size:35px;line-height:1.12;margin:10px 0;letter-spacing:-1px}.modal h2 em{font:italic 38px Georgia,serif;color:#4e9478}.modal p{font-size:13px;line-height:1.7;color:#829486;margin:12px auto 24px;max-width:330px}.modal-illustration{display:block;font-size:40px;color:#dcad5d;margin-bottom:7px}.instructions{text-align:left;margin:19px 0 26px;padding:0;list-style:none}.instructions li{display:flex;align-items:flex-start;gap:12px;margin:14px 0}.instructions li>span{background:#e7f3e5;border-radius:12px;color:#57896a;padding:8px;font-size:11px;font-weight:900}.instructions strong{display:block;font-size:13px;color:#335647;margin:2px 0}.instructions small{display:block;font-size:12px;line-height:1.5;color:#829486}.primary-button{border:0;border-radius:15px;background:#247357;color:white;padding:16px 22px;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:14px;width:100%;box-shadow:0 5px 0 #164735;transition:transform .15s,background .15s}.primary-button:hover{background:#308865;transform:translateY(-2px)}.primary-button span{font-size:21px}.win-stars{color:#ddaf61;letter-spacing:10px}.win-medal{height:94px;width:94px;margin:15px auto 19px;border-radius:50%;background:#ebf6df;border:6px solid #d0eab8;color:#45866b;font-size:54px;display:grid;place-items:center}.win-modal{padding-top:33px}.win-total{margin:8px auto 23px;display:flex;align-items:center;justify-content:center;gap:17px;color:#d7ac66}.win-total strong{color:#43846c;font-size:19px}.text-button{border:0;background:none;color:#689179;font-size:12px;font-weight:850;margin-top:20px}.text-button:hover{text-decoration:underline}.confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}.confetti-piece{position:absolute;top:-50px;width:9px;height:17px;border-radius:2px;animation:confettiDrop var(--duration,3.5s) linear forwards;transform:rotate(var(--rotate))}
+.drag-ghost{position:fixed;left:0;top:0;z-index:80;pointer-events:none;display:grid;place-items:center;width:93px;height:93px;border-radius:20px;background:#fff9e8ef;box-shadow:0 15px 40px #1f33294d;border:2px solid #f2bf6f;transform:translate(-50%,-50%) rotate(-5deg)}.drag-ghost svg{width:76px;height:76px}.dragging-source{opacity:.35}.empty-slot-message{padding:40px 20px;text-align:center;color:#b4c7ae;font-size:12px}
+@keyframes targetPulse{0%,100%{box-shadow:0 0 0 0 #e9c87900}50%{box-shadow:0 0 0 5px #f4d183;color:white;border-color:#f4d183}}@keyframes slotShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}@keyframes confettiDrop{0%{top:-50px;opacity:1;transform:translateX(0) rotate(0deg)}100%{top:110vh;opacity:.7;transform:translateX(var(--drift,100px)) rotate(var(--spin,900deg))}}
+@media(max-width:1050px){.page-shell{width:min(100% - 36px,900px)}.game-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.workbench,.tool-panel{padding:17px 14px 13px}.bench-inner{padding:9px;min-height:590px}.scatter{gap:10px 7px}.piece{min-height:107px}.slot{min-height:215px}.foam-board{padding:12px 6px}.slots{gap:6px}.drawer-tab .drawer-tab-name{font-size:10px}.welcome h1{font-size:31px}.cabinet{padding:9px 8px}.cabinet-lid{padding:0 10px 7px}.drawer-opening{padding:12px 8px}}
+@media(max-width:760px){.page-shell{width:min(100% - 24px,560px)}.site-header{height:78px}.brand-words small{font-size:18px}.brand-mark{grid-template-columns:repeat(2,13px);gap:3px}.brand-mark i{width:13px;height:13px}.save-status{display:none}.welcome{padding:23px 3px 20px}.welcome h1{font-size:30px;line-height:1.2;letter-spacing:-.7px}.welcome h1 em{white-space:normal}.welcome p{font-size:12px;max-width:420px}.welcome-stamp{display:none}.level-summary{padding:15px;margin-bottom:13px;display:block}.level-number{width:46px;height:46px;font-size:21px}.level-heading h2{font-size:20px}.level-heading p{font-size:11px}.progress-wrap{width:100%;margin-top:15px}.progress-line{margin-bottom:7px}.game-layout{grid-template-columns:1fr;gap:14px}.workbench,.tool-panel{padding:19px 17px 15px}.panel-title-row h3{font-size:23px}.panel-hint{margin-bottom:12px}.bench-inner{min-height:0;padding:12px}.scatter{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.piece{min-height:94px;padding:5px 5px}.piece .piece-art,.piece-art .art-svg{width:61px;height:61px}.bench-foot{padding-top:10px}.tool-panel{padding-bottom:18px}.cabinet{min-height:0}.drawer-opening{min-height:360px}.foam-board{min-height:270px}.slot,.bin{min-height:211px}.cabinet-underlay{height:20px}.guidance{margin-top:18px}.game-footer{padding:24px 0 30px}.modal{padding:26px 25px}}
+@media(max-width:390px){.piece{min-height:88px}.piece .piece-art,.piece-art .art-svg{width:54px;height:54px}.piece-name{font-size:10px}.scatter{gap:8px}.workbench,.tool-panel{padding:15px 12px}.bench-inner{padding:8px}.cabinet{padding:9px 6px;border-width:4px}.cabinet-interior{padding:7px 5px 0}.drawer-tab{padding:8px 3px 11px}.drawer-tab .drawer-tab-name{font-size:9px}.drawer-opening{padding:9px 5px}.foam-board{padding:9px 5px;border-width:3px}.slots,.bins{gap:5px}.slot{min-height:196px;padding:8px 1px}.slot .art-svg{height:90px}.slot-label,.bin-title{font-size:10px}.slot-prompt{font-size:8px}.bin{min-height:199px}.bin svg{width:42px;height:42px}.bin-pieces .art-svg{width:33px;height:33px}.welcome h1{font-size:27px}.game-footer{font-size:8px;letter-spacing:1px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+.drawer-closed{min-height:355px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;text-align:center;background:repeating-linear-gradient(180deg,#d9ebd0 0,#d9ebd0 19px,#c4dcc0 20px,#d9ebd0 24px);border-radius:10px;border:3px solid #a5c1a6;color:#60896b}.drawer-closed .closed-symbol{font-size:49px;line-height:1;color:#739d77;transform:rotate(90deg)}.drawer-closed strong{font-size:20px;background:#e4f0dc;padding:7px 19px;border-radius:20px}.drawer-closed span{font-size:12px;background:#e4f0dc;padding:7px 12px;border-radius:20px}
+
+  </style>
+
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Everything in Its Place, home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="brand-words"><strong>EVERYTHING</strong><small>in its place<span class="brand-dot">.</span></small></span>
+      </a>
+      <div class="header-actions">
+        <span class="save-status" aria-label="Progress is saved automatically"><span class="status-pip"></span> progress autosaves</span>
+        <button class="icon-button" id="helpButton" type="button" aria-label="How to play" title="How to play">?</button>
+        <button class="icon-button sound-button" id="soundButton" type="button" aria-pressed="true" aria-label="Turn sound off" title="Toggle sound">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5ZM15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="welcome" aria-label="Game introduction">
+      <div>
+        <div class="eyebrow"><span class="tiny-sparkle">✳</span> A COZY LITTLE ORGANIZING GAME</div>
+        <h1>A little mess. <em>A lot of satisfaction.</em></h1>
+        <p>Find a home for every little thing. No rush, no pressure — just the joy of a perfectly tidy space.</p>
+      </div>
+      <div class="welcome-stamp" aria-hidden="true"><span>TAKE YOUR</span><strong>TIME</strong><span>✦ HAVE FUN ✦</span></div>
+    </section>
+
+    <section class="level-summary" aria-label="Current level and progress">
+      <div class="level-heading">
+        <div class="level-number" id="levelNumber">01</div>
+        <div><div class="eyebrow" id="levelEyebrow">LEVEL ONE · THE WORKSHOP</div><h2 id="levelTitle">The Toolbox</h2><p id="levelSubtitle">Someone knocked over the toolbox! Let's put it right.</p></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-line"><strong id="progressText">0 of 15 put away</strong><span id="progressPercent">0%</span></div>
+        <div class="progress-track" role="progressbar" aria-label="Level completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </section>
+
+    <main class="game-layout" id="game" aria-label="Organizing game">
+      <section class="workbench panel" aria-labelledby="benchTitle">
+        <div class="panel-title-row">
+          <div><div class="panel-overline"><span class="little-circle orange"></span> THE MESS</div><h3 id="benchTitle">The workbench</h3></div>
+          <span class="subtle-pill" id="piecesLeft">15 pieces</span>
+        </div>
+        <p class="panel-hint" id="benchHint">Drag a piece to its home, or tap it to pick it up.</p>
+        <div class="bench-inner"><div class="scatter" id="scatter" aria-label="Items that need to be put away"></div><div class="bench-empty" id="benchEmpty" hidden><div class="empty-icon">✦</div><strong>Look at that!</strong><span>Not a thing out of place.</span></div></div>
+        <div class="bench-foot"><span class="foot-sparkle">✧</span> Every piece has a perfect place.</div>
+      </section>
+
+      <section class="tool-panel panel" aria-labelledby="toolboxTitle">
+        <div class="panel-title-row toolbox-head">
+          <div><div class="panel-overline"><span class="little-circle green"></span> THE ORGANIZER</div><h3 id="toolboxTitle">The toolbox</h3></div>
+          <button class="small-button" type="button" id="hintButton" title="Show me where a piece goes">✦ Hint</button>
+        </div>
+        <p class="panel-hint" id="toolboxHint">Open a drawer and match each piece to its spot.</p>
+        <div class="cabinet">
+          <div class="cabinet-lid"><span class="cabinet-badge">EIP <span>✳</span></span><span class="cabinet-screws">⊙ &nbsp; ⊙</span></div>
+          <div class="cabinet-interior">
+            <div class="drawer-tabs" id="drawerTabs" role="group" aria-label="Toolbox drawers"></div>
+            <div class="drawer-opening" id="drawerOpening"><div id="drawerContent"></div></div>
+            <div class="cabinet-underlay"><span>EVERYTHING HAS A HOME</span><div class="cabinet-feet"><i></i><i></i></div></div>
+          </div>
+        </div>
+        <div class="guidance" aria-live="polite"><span class="guidance-icon" aria-hidden="true">✦</span><span id="guidanceText">Tip: You can also tap a piece, then tap where it belongs.</span></div>
+      </section>
+    </main>
+
+    <footer class="game-footer"><span>MADE FOR THE JOY OF LITTLE THINGS <span aria-hidden="true">♥</span></span><button type="button" id="resetButton">↻ &nbsp; Start level over</button></footer>
+  </div>
+
+  <div class="toast" role="status" aria-live="polite" id="toast"></div>
+
+  <div class="modal-backdrop" id="helpModal" hidden>
+    <div class="modal help-modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <button type="button" class="close-button" data-close="helpModal" aria-label="Close help">×</button>
+      <span class="modal-illustration" aria-hidden="true">✳</span>
+      <div class="eyebrow">THE TIDY-UP GUIDE</div>
+      <h2 id="helpTitle">Every thing in its place.</h2>
+      <p>There's no timer. Just pick up the pieces and help them find their perfect homes.</p>
+      <ol class="instructions">
+        <li><span>01</span><div><strong>Choose a piece</strong><small>Tap a scattered item or drag it with your finger or mouse.</small></div></li>
+        <li><span>02</span><div><strong>Open a drawer</strong><small>Explore the toolbox to find its matching foam shape or sorting bin.</small></div></li>
+        <li><span>03</span><div><strong>Put it away</strong><small>Drop the piece into place or tap the correct spot after selecting it.</small></div></li>
+      </ol>
+      <button class="primary-button" type="button" data-close="helpModal">Let's tidy up! <span>→</span></button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="winModal" hidden>
+    <div class="modal win-modal" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+      <div class="win-stars" aria-hidden="true">✦ &nbsp; ✳ &nbsp; ✧</div>
+      <div class="win-medal" aria-hidden="true">✓</div>
+      <div class="eyebrow">SWEET SATISFACTION</div>
+      <h2 id="winTitle">Everything is<br /><em>in its place!</em></h2>
+      <p id="winDescription">The toolbox is tidy, and every little thing is exactly where it belongs.</p>
+      <div class="win-total"><span>✦</span><strong id="winCount">15 / 15</strong><span>✦</span></div>
+      <button type="button" class="primary-button" id="nextLevelButton">Next level <span>→</span></button>
+      <button type="button" class="text-button" id="replayButton">Play this level again</button>
+    </div>
+  </div>
+
+  <div class="confetti-layer" id="confetti" aria-hidden="true"></div>
+  <script>
+/* Everything in Its Place — a dependency-free, browser-based game.
+   Extend LEVELS below to add more objects, sorting bins, and levels. */
+(() => {
+  'use strict';
+
+  const SVG = {
+    hammer: `<g transform="rotate(-30 50 50)"><rect x="44" y="24" width="13" height="62" rx="5" fill="#b98550" stroke="#93653c" stroke-width="2"/><path d="M45 58h11" stroke="#e9bb81" stroke-width="2"/><rect x="21" y="14" width="57" height="25" rx="8" fill="#738c97" stroke="#516d77" stroke-width="3"/><rect x="22" y="18" width="12" height="17" rx="3" fill="#9fb3b9"/><path d="M66 16l9 6-3 13-10 2" fill="#576f7b"/></g>`,
+    wrench: `<g transform="rotate(-18 50 50)"><path d="M65 13a23 23 0 0 0-14 31L22 74a10 10 0 0 0 14 14l31-30a23 23 0 0 0 27-29L79 40 65 33 61 19Z" fill="#809ba7" stroke="#526f7a" stroke-width="3" stroke-linejoin="round"/><circle cx="29" cy="81" r="4" fill="#d1dce0"/></g>`,
+    screwdriver: `<g transform="rotate(34 50 50)"><path d="M47 7h6l2 24H45Z" fill="#90a8b0" stroke="#597581" stroke-width="2"/><path d="M47 9h6" stroke="#e7f1ee" stroke-width="2"/><rect x="39" y="30" width="22" height="49" rx="8" fill="#efad5a" stroke="#c17f36" stroke-width="3"/><rect x="42" y="44" width="16" height="23" rx="4" fill="#d38a3d"/><path d="M50 35v-4" stroke="#7e9ca7" stroke-width="4"/><rect x="44" y="75" width="12" height="9" rx="4" fill="#b57a39"/></g>`,
+    pliers: `<g transform="rotate(-12 50 50)"><path d="M41 47 20 88Q16 96 10 87Q8 82 15 74L35 43" fill="#dc9873" stroke="#a8644e" stroke-width="3"/><path d="M53 47 82 85q7 10 12 1q3-6-5-13L59 40" fill="#edb389" stroke="#ad6e54" stroke-width="3"/><path d="M42 46 27 16q-3-7 3-10l22 36M54 43 67 12q4-8 10-3L62 50" fill="#8babb0" stroke="#5e8389" stroke-width="4" stroke-linecap="round"/><circle cx="49" cy="48" r="8" fill="#4f7277"/><circle cx="49" cy="48" r="3" fill="#bbced0"/></g>`,
+    tape: `<g transform="rotate(10 50 50)"><rect x="14" y="18" width="75" height="66" rx="20" fill="#ecbd58" stroke="#c38c3d" stroke-width="4"/><rect x="24" y="26" width="46" height="49" rx="13" fill="#f8d784"/><circle cx="46" cy="49" r="16" fill="#e5b350" stroke="#c08c39" stroke-width="3"/><circle cx="46" cy="49" r="7" fill="#fff2c8"/><rect x="73" y="43" width="22" height="17" rx="4" fill="#8d9da0" stroke="#556e75" stroke-width="3"/><path d="M77 47h13" stroke="#dfedef" stroke-width="2"/></g>`,
+    flashlight: `<g transform="rotate(-30 50 50)"><path d="M32 19h36l-7 19H39Z" fill="#8baab1" stroke="#5d8085" stroke-width="3"/><rect x="39" y="35" width="22" height="51" rx="6" fill="#477e79" stroke="#2a605c" stroke-width="3"/><rect x="43" y="41" width="14" height="23" rx="4" fill="#65a399"/><path d="M45 74h10" stroke="#c3e1d4" stroke-width="3" stroke-linecap="round"/><ellipse cx="50" cy="17" rx="22" ry="9" fill="#c2d5c2" stroke="#597f80" stroke-width="3"/><ellipse cx="50" cy="17" rx="12" ry="5" fill="#f5df98"/></g>`,
+    nut: `<g transform="rotate(14 50 50)"><path d="M30 17h40l20 33-20 33H30L10 50Z" fill="#8babb5" stroke="#527480" stroke-width="5" stroke-linejoin="round"/><path d="M30 25h40l14 25-14 25H30L16 50Z" fill="#bbd0d0"/><circle cx="50" cy="50" r="17" fill="#5c7a80"/><circle cx="50" cy="50" r="10" fill="#e2e5d8"/><path d="M28 20 19 43M76 29l9 15" stroke="#e2edeb" stroke-width="3"/></g>`,
+    bolt: `<g transform="rotate(32 50 50)"><path d="M39 15 50 7 61 15v15l-11 7-11-7Z" fill="#829eaa" stroke="#597984" stroke-width="3"/><rect x="45" y="33" width="10" height="55" rx="3" fill="#a8bdc2" stroke="#60808c" stroke-width="2"/><path d="M45 40h10M45 48h10M45 56h10M45 64h10M45 72h10M45 80h10" stroke="#668692" stroke-width="2"/><path d="M43 19h14" stroke="#cad9dc" stroke-width="3"/></g>`,
+    screw: `<g transform="rotate(-34 50 50)"><path d="M39 17h22v13H39Z" fill="#809da6" stroke="#537480" stroke-width="3"/><path d="M43 30h14v52l-7 12-7-12Z" fill="#aac2c7" stroke="#63848c" stroke-width="2"/><path d="M43 38 57 44M43 48l14 6M43 59l14 6M43 70l14 6M43 80l9 4" stroke="#6e939b" stroke-width="2.5"/><path d="M45 22h10" stroke="#e7efee" stroke-width="3"/></g>`,
+    scissors: `<g transform="rotate(-18 50 50)"><path d="M48 51 73 9 81 12 57 57M47 49 87 23l4 8-38 29" fill="#b9ced3" stroke="#648b91" stroke-width="3" stroke-linejoin="round"/><circle cx="35" cy="70" r="17" fill="none" stroke="#cd8f72" stroke-width="9"/><circle cx="72" cy="75" r="16" fill="none" stroke="#dba889" stroke-width="9"/><path d="M45 59 56 58M58 60l5 5" stroke="#6a8b91" stroke-width="6"/><circle cx="53" cy="55" r="4" fill="#45676d"/></g>`,
+    pen: `<g transform="rotate(35 50 50)"><rect x="43" y="15" width="15" height="64" rx="5" fill="#5b9792" stroke="#36736c" stroke-width="3"/><rect x="43" y="13" width="15" height="12" rx="4" fill="#d0e4d5"/><path d="M43 76h15l-8 18Z" fill="#d8ad72" stroke="#a9804f" stroke-width="2"/><path d="M48 90h5l-3 5Z" fill="#3c5557"/><path d="M55 26h7v29" fill="none" stroke="#badad1" stroke-width="3" stroke-linecap="round"/></g>`,
+    notebook: `<g transform="rotate(-10 50 50)"><rect x="22" y="13" width="62" height="75" rx="5" fill="#e8ad8e" stroke="#b97d62" stroke-width="3"/><rect x="24" y="13" width="10" height="75" fill="#c98870"/><path d="M44 35h30M44 45h25M44 55h30M44 65h20" stroke="#f9e3d0" stroke-width="3"/><path d="M25 24h11M25 38h11M25 52h11M25 66h11M25 80h11" stroke="#856d65" stroke-width="3"/></g>`,
+    ruler: `<g transform="rotate(-28 50 50)"><rect x="39" y="7" width="24" height="89" rx="4" fill="#f4c969" stroke="#c49340" stroke-width="3"/><path d="M40 20h13M40 29h8M40 38h13M40 47h8M40 56h13M40 65h8M40 74h13M40 83h8" stroke="#ad8037" stroke-width="2.5"/></g>`,
+    stapler: `<g transform="rotate(-12 50 50)"><path d="M18 67h72v17H20Z" fill="#6e9392" stroke="#3c6a67" stroke-width="3"/><path d="M22 37 75 26q11-2 13 9l3 17-66 12Z" fill="#9cabc9" stroke="#687c9c" stroke-width="3"/><path d="M29 46 77 37" stroke="#d8e1e9" stroke-width="3"/><path d="M29 70h51" stroke="#b9d1c7" stroke-width="3"/></g>`,
+    sticky: `<g transform="rotate(9 50 50)"><rect x="17" y="17" width="65" height="65" rx="4" fill="#efce76" stroke="#d2a24f" stroke-width="3"/><path d="M55 82 82 55v27Z" fill="#dcaf5f"/><path d="M30 38h36M30 47h30M30 56h23" stroke="#d7a85f" stroke-width="3"/></g>`,
+    clip: `<g transform="rotate(22 50 50)"><path d="M70 42V25a19 19 0 0 0-38 0v51a13 13 0 0 0 26 0V31a7 7 0 0 0-14 0v41" fill="none" stroke="#8daab7" stroke-width="8" stroke-linecap="round"/><path d="M70 42V25a19 19 0 0 0-38 0v51" fill="none" stroke="#d0dfe1" stroke-width="2"/></g>`,
+    eraser: `<g transform="rotate(-25 50 50)"><rect x="19" y="27" width="63" height="52" rx="10" fill="#efaaa0" stroke="#d5857b" stroke-width="4"/><path d="M51 27v52" stroke="#f8d0bd" stroke-width="4"/><path d="M24 35h23" stroke="#f6c2b5" stroke-width="3"/></g>`,
+    pushpin: `<g transform="rotate(-22 50 50)"><path d="M29 27h42v18H29Z" fill="#dfa66c" stroke="#a97542" stroke-width="3"/><path d="M40 45h20v19H40Z" fill="#eec58e" stroke="#bf945c" stroke-width="2"/><path d="M48 64h4l-2 30Z" fill="#829da5"/><ellipse cx="50" cy="26" rx="25" ry="12" fill="#eebf77" stroke="#c68e4b" stroke-width="3"/></g>`
+  };
+
+  function art(kind, variant='normal') {
+    return `<svg class="art-svg ${variant === 'shadow' ? 'art-shadow' : ''}" viewBox="0 0 100 100" aria-hidden="true" focusable="false">${SVG[kind] || SVG.nut}</svg>`;
+  }
+
+  function slot(key, label, kind=key) { return {key, label, kind, type:'slot'}; }
+  function bin(key, label, count=3, kind=key) { return {key, label, kind, count, type:'bin'}; }
+  function one(key, label, drawer, kind=key) { return {id:key, kind, label, target:key, drawer}; }
+  function many(key, label, drawer, count=3) { return Array.from({length:count}, (_, i) => ({id:`${key}-${i+1}`,kind:key,label,target:key,drawer})); }
+  const LEVELS = [
+    {
+      name:'The Toolbox', short:'THE WORKSHOP', subtitle:'Someone knocked over the toolbox! Let’s put it right.',
+      bench:'The workbench', organizer:'The toolbox', organizerDetail:'Open a drawer and match each piece to its spot.', empty:'Not a thing out of place.',
+      win:'The toolbox is tidy, and every little thing is exactly where it belongs.',
+      drawers:[
+        {tab:'Top drawer',name:'The hand tools', description:'Match the tools to their foam cutouts.',targets:[slot('hammer','Hammer'),slot('wrench','Wrench'),slot('screwdriver','Screwdriver')]},
+        {tab:'Middle drawer',name:'The extras',description:'A snug little spot for each tool.',targets:[slot('pliers','Pliers'),slot('tape','Tape measure'),slot('flashlight','Flashlight')]},
+        {tab:'Bottom drawer',name:'The little bits',description:'Separate the nuts, bolts and screws into their bins.',targets:[bin('nut','Nuts'),bin('bolt','Bolts'),bin('screw','Screws')]}
+      ],
+      items:[one('hammer','Hammer',0),one('wrench','Wrench',0),one('screwdriver','Screwdriver',0),one('pliers','Pliers',1),one('tape','Tape measure',1),one('flashlight','Flashlight',1),...many('nut','Nut',2),...many('bolt','Bolt',2),...many('screw','Screw',2)]
+    },
+    {
+      name:'Desk Reset', short:'THE STUDY NOOK', subtitle:'The desk got a little chaotic. Everything needs a home.',
+      bench:'The desktop', organizer:'The desk organizer', organizerDetail:'Open each compartment to tidy up the desk.',empty:'A desk ready for big ideas.',
+      win:'The study nook is sparkling clean. You made room for some big ideas!',
+      drawers:[
+        {tab:'Top drawer',name:'Writing things',description:'Every useful tool has its own home.',targets:[slot('notebook','Notebook'),slot('pen','Pen'),slot('ruler','Ruler')]},
+        {tab:'Middle drawer',name:'Handy helpers',description:'Match these study supplies to their cutouts.',targets:[slot('scissors','Scissors'),slot('stapler','Stapler'),slot('sticky','Sticky notes')]},
+        {tab:'Bottom drawer',name:'Tiny supplies',description:'Sort the little stationery bits into their bins.',targets:[bin('clip','Paper clips',2),bin('eraser','Erasers',2),bin('pushpin','Pushpins',2)]}
+      ],
+      items:[one('notebook','Notebook',0),one('pen','Pen',0),one('ruler','Ruler',0),one('scissors','Scissors',1),one('stapler','Stapler',1),one('sticky','Sticky notes',1),...many('clip','Paper clip',2,2),...many('eraser','Eraser',2,2),...many('pushpin','Pushpin',2,2)]
+    }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const storeKey='everything-in-its-place-save-v1';
+  let levelIndex=0;
+  let done=new Set();
+  let activeDrawer=0;
+  let selectedId=null;
+  let muted=false;
+  let toastTimer=null;
+  let drag=null;
+  let audioContext=null;
+  let hintTimer=null;
+  let completedShown=false;
+  const tilts=[-5,3,-2,5,-3,4,-4,2,-5,4,-3,3,1,-4,5];
+  const getLevel=() => LEVELS[levelIndex];
+  const total=() => getLevel().items.length;
+  const itemById=id => getLevel().items.find(x=>x.id===id);
+  const targetFor=item => getLevel().drawers[item.drawer].targets.find(t=>t.key===item.target);
+  const targetItems=(drawer,key) => getLevel().items.filter(item=>item.drawer===drawer && item.target===key);
+  const targetDone=(drawer,key) => targetItems(drawer,key).filter(x=>done.has(x.id)).length;
+  const allInDrawer=drawer => getLevel().items.filter(x=>x.drawer===drawer);
+
+  function save() {
+    try {localStorage.setItem(storeKey,JSON.stringify({v:1,level:levelIndex,done:Array.from(done),muted}));} catch (_error) { /* local file privacy mode */ }
+  }
+  function restore() {
+    try {
+      const data=JSON.parse(localStorage.getItem(storeKey) || '{}');
+      if(data.v===1 && Number.isInteger(data.level) && data.level>=0 && data.level<LEVELS.length){
+        levelIndex=data.level;
+        const valid=new Set(getLevel().items.map(x=>x.id));
+        done=new Set((Array.isArray(data.done)?data.done:[]).filter(x=>valid.has(x)));
+        muted=!!data.muted;
+      }
+    } catch(_error) { /* default game is always playable */ }
+  }
+  function escapeText(value){return String(value).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function setGuidance(message) { $('guidanceText').textContent=message; }
+  function showToast(message, trouble=false) {
+    const el=$('toast'); el.textContent=message; el.style.background=trouble?'#945c4e':'#204c40';
+    el.classList.add('is-visible'); clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>el.classList.remove('is-visible'),2100);
+  }
+  function sound(success=true) {
+    if(muted) return;
+    try {
+      const Audio=window.AudioContext || window.webkitAudioContext;
+      if(!Audio) return;
+      audioContext=audioContext||new Audio();
+      if(audioContext.state==='suspended') audioContext.resume();
+      const ctx=audioContext;const now=ctx.currentTime;
+      const notes=success?[540,720]:[220];
+      notes.forEach((frequency,index)=>{
+        const osc=ctx.createOscillator(); const amp=ctx.createGain();
+        osc.type='sine';osc.frequency.value=frequency;
+        amp.gain.setValueAtTime(.0001,now+index*.08);
+        amp.gain.exponentialRampToValueAtTime(.08,now+index*.08+.014);
+        amp.gain.exponentialRampToValueAtTime(.0001,now+index*.08+.19);
+        osc.connect(amp);amp.connect(ctx.destination);osc.start(now+index*.08);osc.stop(now+index*.08+.2);
+      });
+    } catch(_error) { /* audio is optional */ }
+  }
+  function updateTop(){
+    const level=getLevel();const count=done.size;const percent=Math.round(count/total()*100);
+    $('levelNumber').textContent=String(levelIndex+1).padStart(2,'0');
+    $('levelEyebrow').textContent=`LEVEL ${levelIndex===0?'ONE':'TWO'} · ${level.short}`;
+    $('levelTitle').textContent=level.name;
+    $('levelSubtitle').textContent=level.subtitle;
+    $('benchTitle').textContent=level.bench;
+    $('toolboxTitle').textContent=level.organizer;
+    $('toolboxHint').textContent=level.organizerDetail;
+    $('piecesLeft').textContent=`${total()-count} ${total()-count===1?'piece':'pieces'}`;
+    $('progressText').textContent=`${count} of ${total()} put away`;
+    $('progressPercent').textContent=percent+'%';
+    $('progressFill').style.width=percent+'%';
+    $('progressTrack').setAttribute('aria-valuenow',String(percent));
+    $('soundButton').setAttribute('aria-pressed',String(!muted));
+    $('soundButton').setAttribute('aria-label',muted?'Turn sound on':'Turn sound off');
+  }
+  function renderBench(){
+    const remaining=getLevel().items.filter(item=>!done.has(item.id));
+    const scatter=$('scatter');
+    scatter.innerHTML=remaining.map((item,index)=>{
+      const num=+item.id.split('-')[1]||0;
+      return `<button type="button" class="piece ${selectedId===item.id?'is-selected':''}" data-item="${escapeText(item.id)}" style="--tilt:${tilts[getLevel().items.indexOf(item)]||0}deg" aria-pressed="${selectedId===item.id}" aria-label="Pick up ${escapeText(item.label)}${num?' '+num:''}"><span class="piece-art">${art(item.kind)}</span><span class="piece-name">${escapeText(item.label)}</span>${num?`<span class="piece-type-count">${num}</span>`:''}</button>`;
+    }).join('');
+    scatter.hidden=remaining.length===0;
+    $('benchEmpty').hidden=remaining.length>0;
+    $('benchEmpty').querySelector('span').textContent=getLevel().empty;
+  }
+  function renderTabs(){
+    $('drawerTabs').innerHTML=getLevel().drawers.map((drawer,i)=>{
+      const all=allInDrawer(i),filled=all.filter(item=>done.has(item.id)).length;
+      return `<button type="button" class="drawer-tab ${activeDrawer===i?'is-active':''} ${filled===all.length?'is-complete':''}" data-drawer="${i}" aria-pressed="${activeDrawer===i}" aria-expanded="${activeDrawer===i}" aria-label="${activeDrawer===i?'Close':'Open'} ${escapeText(drawer.tab)}, ${filled} of ${all.length} pieces sorted"><span class="drawer-tab-name">${escapeText(drawer.tab)}</span><span class="drawer-count">${filled}/${all.length}${filled===all.length?' ✓':''}</span><span class="drawer-handle"></span></button>`;
+    }).join('');
+  }
+  function renderDrawer(){
+    if(activeDrawer===-1){
+      $('drawerContent').innerHTML='<div class="drawer-closed"><div class="closed-symbol" aria-hidden="true">≡</div><strong>All tucked away.</strong><span>Tap a drawer handle above to open it.</span></div>';
+      return;
+    }
+    const drawer=getLevel().drawers[activeDrawer];
+    const slots=drawer.targets.map(target=>{
+      const placed=targetDone(activeDrawer,target.key);const necessary=targetItems(activeDrawer,target.key).length;
+      if(target.type==='bin'){
+        return `<button type="button" class="bin ${placed===necessary?'is-complete':''}" data-target="${escapeText(target.key)}" data-target-type="bin" aria-label="${escapeText(target.label)} bin, ${placed} of ${necessary}">
+          ${art(target.kind)}<span class="bin-title">${escapeText(target.label)}</span><span class="bin-count">${placed}/${necessary} sorted</span>
+          <span class="bin-pieces">${targetItems(activeDrawer,target.key).filter(x=>done.has(x.id)).map(()=>art(target.kind)).join('')}</span>
+          ${placed===necessary?'<span class="bin-check">✓</span>':''}</button>`;
+      }
+      return `<button type="button" class="slot ${placed?'is-filled':''}" data-target="${escapeText(target.key)}" data-target-type="slot" aria-label="${escapeText(target.label)} foam cutout, ${placed?'filled':'empty'}">
+        ${placed?'<span class="slot-check">✓</span>':''}${art(target.kind,placed?'normal':'shadow')}
+        <span class="slot-label">${escapeText(target.label)}</span><span class="slot-prompt">${placed?'PERFECT FIT':'FOAM CUTOUT'}</span>
+      </button>`;
+    }).join('');
+    $('drawerContent').innerHTML=`<div class="drawer-label">${escapeText(drawer.name)}<span>DRAWER ${activeDrawer+1} / 3</span></div><p class="drawer-description">${escapeText(drawer.description)}</p><div class="foam-board"><div class="${drawer.targets[0].type==='bin'?'bins':'slots'}">${slots}</div></div>`;
+  }
+  function render(){updateTop();renderBench();renderTabs();renderDrawer();}
+  function setDrawer(index){
+    if(index< -1||index>=getLevel().drawers.length) return;
+    activeDrawer=index;
+    renderTabs();renderDrawer();
+    if(selectedId){const item=itemById(selectedId);setGuidance(`Holding ${item.label.toLowerCase()}. Find its matching home in the drawers.`);}
+    else setGuidance(index===-1?'The drawers are closed. Tap any drawer handle to open it.':`Drawer ${index+1} is open. Drag a piece in, or tap to select it first.`);
+  }
+  function selectPiece(id){
+    if(!itemById(id)||done.has(id))return;
+    selectedId=selectedId===id?null:id;
+    renderBench();
+    if(selectedId){const item=itemById(selectedId);setGuidance(`Holding ${item.label.toLowerCase()} — open a drawer, then tap its matching space.`);showToast(`${item.label} selected. Now find its home!`);}
+    else setGuidance('Pick up a piece to see where it belongs.');
+  }
+  function attemptPlace(id,key,type,wrongElement){
+    const item=itemById(id);
+    if(!item||done.has(id))return false;
+    const target=targetFor(item);
+    if(item.drawer!==activeDrawer||key!==item.target||target.type!==type){
+      if(wrongElement){wrongElement.classList.remove('is-wrong');void wrongElement.offsetWidth;wrongElement.classList.add('is-wrong');}
+      sound(false);showToast('Not quite! Try matching the shape or label.',true);
+      setGuidance(`That doesn't fit ${item.label.toLowerCase()}. Try another spot or drawer.`);
+      return false;
+    }
+    done.add(id);selectedId=null;
+    save();sound();render();
+    showToast(['Perfect fit! ✦','Right where it belongs!','So satisfying! ✳','One more thing put away!'][Math.floor(Math.random()*4)]);
+    setGuidance(`${item.label} is home! ${total()-done.size===0?'You did it!':'Keep going — you’ve got this.'}`);
+    if(done.size===total()&&!completedShown){
+      completedShown=true;
+      window.setTimeout(()=>{launchConfetti();showWin();},550);
+    }
+    return true;
+  }
+  function highlightHint(){
+    const remaining=getLevel().items.filter(item=>!done.has(item.id));
+    if(!remaining.length){showWin();return;}
+    const item=selectedId?itemById(selectedId):remaining[0];
+    if(!selectedId){selectedId=item.id;renderBench();}
+    setDrawer(item.drawer);
+    const slotEl=[...document.querySelectorAll('[data-target]')].find(x=>x.dataset.target===item.target);
+    if(slotEl){slotEl.classList.add('is-hinted');clearTimeout(hintTimer);hintTimer=setTimeout(()=>slotEl.classList.remove('is-hinted'),3100);}
+    setGuidance(`Hint: ${item.label} belongs in the ${getLevel().drawers[item.drawer].tab.toLowerCase()}, in the ${targetFor(item).label.toLowerCase()} spot.`);
+    showToast(`Look for the glowing ${targetFor(item).label.toLowerCase()} spot. ✨`);
+  }
+  function openModal(id){$(id).hidden=false;const button=$(id).querySelector('button');if(button)button.focus();}
+  function closeModal(id){$(id).hidden=true;}
+  function showWin(){
+    $('winDescription').textContent=getLevel().win;
+    $('winCount').textContent=`${total()} / ${total()}`;
+    $('nextLevelButton').innerHTML=levelIndex===LEVELS.length-1?'Back to the toolbox <span>↻</span>':'Next level <span>→</span>';
+    openModal('winModal');
+  }
+  function startLevel(index){
+    levelIndex=index;done=new Set();activeDrawer=0;selectedId=null;completedShown=false;
+    closeModal('winModal');save();render();setGuidance('Tip: You can also tap a piece, then tap where it belongs.');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function launchConfetti(){
+    const layer=$('confetti');layer.innerHTML='';
+    const colors=['#f7c66c','#72b889','#f29e88','#91bfb3','#e6e7a6','#fff9e0'];
+    for(let i=0;i<125;i++){
+      const node=document.createElement('i');node.className='confetti-piece';
+      node.style.left=`${Math.random()*100}%`;node.style.background=colors[i%colors.length];
+      node.style.setProperty('--duration',`${2.4+Math.random()*2.7}s`);
+      node.style.setProperty('--drift',`${Math.random()*280-140}px`);
+      node.style.setProperty('--spin',`${300+Math.random()*900}deg`);
+      node.style.animationDelay=`${Math.random()*.65}s`;
+      layer.append(node);
+    }
+    window.setTimeout(()=>{layer.innerHTML='';},5900);
+    if(!muted){const now=window.setTimeout;now(()=>sound(true),70);now(()=>sound(true),240);now(()=>sound(true),420);}
+  }
+  function moveGhost(x,y){if(drag?.ghost){drag.ghost.style.left=x+'px';drag.ghost.style.top=y+'px';}}
+  function cleanupDrag(){if(!drag)return;drag.ghost?.remove();document.querySelector('.dragging-source')?.classList.remove('dragging-source');drag=null;}
+  function pointerDown(event){
+    if(event.button!==undefined&&event.button!==0)return;
+    const piece=event.target.closest('[data-item]');if(!piece)return;
+    drag={id:piece.dataset.item,pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,moving:false,ghost:null};
+  }
+  function pointerMove(event){
+    if(!drag||event.pointerId!==drag.pointerId)return;
+    const distance=Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY);
+    if(!drag.moving && distance>9){
+      drag.moving=true;
+      drag.ghost=document.createElement('div');drag.ghost.className='drag-ghost';
+      drag.ghost.innerHTML=art(itemById(drag.id).kind);
+      document.body.appendChild(drag.ghost);
+      const source=[...document.querySelectorAll('[data-item]')].find(x=>x.dataset.item===drag.id);source?.classList.add('dragging-source');
+    }
+    if(drag.moving){
+      event.preventDefault();moveGhost(event.clientX,event.clientY);
+      const element=document.elementFromPoint(event.clientX,event.clientY);
+      const drawer=element?.closest('[data-drawer]');
+      if(drawer && Number(drawer.dataset.drawer)!==activeDrawer) setDrawer(Number(drawer.dataset.drawer));
+    }
+  }
+  function pointerUp(event){
+    if(!drag||event.pointerId!==drag.pointerId)return;
+    if(drag.moving){
+      event.preventDefault();
+      const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-target]');
+      if(target){attemptPlace(drag.id,target.dataset.target,target.dataset.targetType,target);}
+      else{
+        const drawer=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-drawer]');
+        if(drawer){selectedId=drag.id;renderBench();setGuidance('Drawer opened. Tap a matching cutout or bin to put the piece away.');}
+        else{selectedId=drag.id;renderBench();setGuidance('Piece selected — tap its matching shape or bin to put it away.');}
+      }
+    }
+    cleanupDrag();
+  }
+  function wireEvents(){
+    $('scatter').addEventListener('pointerdown',pointerDown);
+    window.addEventListener('pointermove',pointerMove,{passive:false});
+    window.addEventListener('pointerup',pointerUp);
+    window.addEventListener('pointercancel',cleanupDrag);
+    $('scatter').addEventListener('click',event=>{
+      const piece=event.target.closest('[data-item]');if(piece)selectPiece(piece.dataset.item);
+    });
+    $('drawerTabs').addEventListener('click',event=>{
+      const tab=event.target.closest('[data-drawer]');if(tab){const index=Number(tab.dataset.drawer);setDrawer(index===activeDrawer?-1:index);}
+    });
+    $('drawerContent').addEventListener('click',event=>{
+      const target=event.target.closest('[data-target]');if(!target)return;
+      if(!selectedId){showToast('Pick up a piece from the workbench first.');return;}
+      attemptPlace(selectedId,target.dataset.target,target.dataset.targetType,target);
+    });
+    $('hintButton').addEventListener('click',highlightHint);
+    $('helpButton').addEventListener('click',()=>openModal('helpModal'));
+    $('soundButton').addEventListener('click',()=>{muted=!muted;save();updateTop();showToast(muted?'Sounds off':'Sounds on ♪');});
+    $('resetButton').addEventListener('click',()=>{if(window.confirm('Start this level over? Your placed pieces will be returned to the workbench.'))startLevel(levelIndex);});
+    $('nextLevelButton').addEventListener('click',()=>startLevel((levelIndex+1)%LEVELS.length));
+    $('replayButton').addEventListener('click',()=>startLevel(levelIndex));
+    document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
+    document.querySelectorAll('.modal-backdrop').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal&&modal.id==='helpModal')closeModal('helpModal');}));
+    window.addEventListener('keydown',event=>{
+      if(event.key==='Escape'){if(!$('helpModal').hidden)closeModal('helpModal');else selectedId=null;renderBench();}
+    });
+  }
+  restore();wireEvents();render();
+  if(done.size===total()){completedShown=true;setTimeout(()=>showWin(),350);}
+})();
+
+  </script>
+</body>
+</html>
