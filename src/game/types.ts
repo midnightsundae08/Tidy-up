@@ -2,7 +2,7 @@ export type TargetType = 'slot' | 'bin';
 
 export type ThemeId = 'workshop' | 'study' | 'kitchen' | 'garden' | 'bath' | 'sewing';
 
-export type Mode = 'campaign' | 'silhouette' | 'peek' | 'mixed' | 'perfect';
+export type Mode = 'campaign' | 'silhouette' | 'peek' | 'mixed' | 'perfect' | 'endless';
 
 export type Target = {
   key: string;

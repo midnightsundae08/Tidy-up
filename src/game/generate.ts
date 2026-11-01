@@ -100,7 +100,7 @@ function themeById(id: ThemeId): Theme {
 }
 
 export function clutterCount(index: number, mode: Mode): number {
-  if (mode === 'campaign') return Math.min(4, 1 + Math.floor(index / 2));
+  if (mode === 'campaign' || mode === 'endless') return Math.min(4, 1 + Math.floor(index / 2));
   return 2 + Math.min(2, index);
 }
 
@@ -117,7 +117,7 @@ export function dealClutter(picked: Theme[], count: number, rng: Rng): Clutter[]
 
 export function generateLevel(seed: string, index: number, mode: Mode): Level {
   const rng = mulberry32(hashString(`${seed}:${mode}:${index}`));
-  const difficulty = mode === 'campaign' ? difficultyFor(index) : challengeDifficulty(mode);
+  const difficulty = mode === 'campaign' || mode === 'endless' ? difficultyFor(index) : challengeDifficulty(mode);
   const picked = pickThemes(mode, index, rng);
   const primary = picked[0];
   const slotCount = difficulty.useBins ? difficulty.drawers - 1 : difficulty.drawers;
@@ -184,6 +184,10 @@ function pickThemes(mode: Mode, index: number, rng: Rng): Theme[] {
     const span = campaignThemes.length;
     const offset = (((index - 2) % span) + span) % span;
     return [themeById(campaignThemes[offset])];
+  }
+  if (mode === 'endless') {
+    const id = challengeThemes[(index + rng.int(challengeThemes.length)) % challengeThemes.length];
+    return [themeById(id)];
   }
   if (mode === 'mixed') {
     const pool = shuffle(challengeThemes, rng);

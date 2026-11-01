@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { playTone, reducedMotion } from './game/audio';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { playFanfare, playTone, reducedMotion, resumeAudio } from './game/audio';
+import { beginNextRoundMusic, duckMusic, ensureMenuTheme, setMusicMuted, startGameplay } from './game/music';
 import { CAMPAIGN_SEED } from './game/generate';
 import { getLevel } from './game/levels';
 import { evaluatePlace, nextHintPiece, targetFor, timeBudget } from './game/rules';
@@ -11,8 +12,9 @@ import { ChallengeScreen } from './components/ChallengeScreen';
 import { HelpDialog, ResetDialog, TimeUpDialog, WinDialog } from './components/Dialogs';
 import { HomeScreen } from './components/HomeScreen';
 import { PlayScreen, SWEEP_MS } from './components/PlayScreen';
+import { TitleScreen } from './components/TitleScreen';
 
-type Screen = 'home' | 'campaign' | 'challenges' | 'play';
+type Screen = 'title' | 'home' | 'campaign' | 'challenges' | 'play';
 
 function loadInitial(): { save: SaveData; status: SaveStatus; remembered: boolean } {
   try {
@@ -26,7 +28,8 @@ function loadInitial(): { save: SaveData; status: SaveStatus; remembered: boolea
 
 export function App() {
   const initial = useMemo(loadInitial, []);
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreen] = useState<Screen>('title');
+  const celebratedRound = useRef(false);
   const [save, setSave] = useState<SaveData>(initial.save);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>(initial.status);
   const [remembered, setRemembered] = useState(initial.remembered);
@@ -36,14 +39,15 @@ export function App() {
   const [winOpen, setWinOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const level = getLevel(save.mode, save.seed, save.level);
+  const timed = save.mode !== 'endless';
   const budget = timeBudget(save.level, level.items.length);
   const timeLeft = Math.max(0, budget - save.elapsed);
   const finished = save.done.length === level.items.length;
-  const timeUp = screen === 'play' && !finished && timeLeft <= 0;
+  const timeUp = timed && screen === 'play' && !finished && timeLeft <= 0;
   const dialogOpen = helpOpen || winOpen || resetOpen || timeUp;
 
   useEffect(() => {
-    if (screen !== 'play' || dialogOpen || finished || timeUp) return;
+    if (!timed || screen !== 'play' || dialogOpen || finished || timeUp) return;
     const started = Date.now();
     const base = save.elapsed;
     const tick = window.setInterval(() => {
@@ -52,7 +56,7 @@ export function App() {
     }, 250);
     return () => window.clearInterval(tick);
     // Elapsed is read once when the tick starts; it restarts whenever play pauses or resumes.
-  }, [screen, dialogOpen, finished, timeUp, save.mode, save.seed, save.level]);
+  }, [timed, screen, dialogOpen, finished, timeUp, save.mode, save.seed, save.level]);
 
   useEffect(() => {
     document.body.classList.toggle('is-playing', screen === 'play');
@@ -82,6 +86,28 @@ export function App() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [helpOpen, resetOpen, winOpen]);
+
+  useEffect(() => {
+    setMusicMuted(save.muted);
+  }, [save.muted]);
+
+  useEffect(() => {
+    if (screen === 'title') return;
+    if (screen === 'play') startGameplay();
+    else ensureMenuTheme();
+  }, [screen]);
+
+  useEffect(() => {
+    if (winOpen && screen === 'play') {
+      if (!celebratedRound.current) {
+        celebratedRound.current = true;
+        duckMusic();
+        playFanfare(save.muted);
+      }
+      return;
+    }
+    celebratedRound.current = false;
+  }, [winOpen, screen, save.muted]);
 
   function patch(partial: Partial<SaveData>) {
     setSave((current) => ({ ...current, ...partial }));
@@ -141,9 +167,17 @@ export function App() {
     };
   }
 
+  function onBegin() {
+    setMusicMuted(save.muted);
+    void resumeAudio();
+    ensureMenuTheme();
+    setScreen('home');
+  }
+
   return (
     <>
       <div className={screen === 'play' ? 'page-shell is-playing' : 'page-shell'} inert={dialogOpen ? true : undefined}>
+        {screen === 'title' ? null : (
         <header className="site-header">
           <button type="button" className="brand" onClick={() => { setWinOpen(false); setScreen('home'); }}>
             <BrandMark />
@@ -176,12 +210,19 @@ export function App() {
             </button>
           </div>
         </header>
+        )}
+
+        {screen === 'title' ? <TitleScreen onBegin={onBegin} /> : null}
 
         {screen === 'home' ? (
           <HomeScreen
             hasSave={remembered}
             onContinue={() => begin(save, true)}
             onCampaign={() => setScreen('campaign')}
+            onEndless={() => {
+              if (remembered && save.mode === 'endless') begin(save, true);
+              else fresh('endless', `run-${Date.now().toString(36)}`, 0);
+            }}
             onChallenges={() => setScreen('challenges')}
           />
         ) : null}
@@ -257,18 +298,21 @@ export function App() {
         mistakes={save.mistakes}
         timeLeft={timeLeft}
         onReplay={() => {
+          beginNextRoundMusic();
           setWinOpen(false);
           setSelectedId(null);
           setActiveDrawer(0);
           patch({ done: [], mistakes: 0, hintsUsed: 0, elapsed: 0 });
         }}
         onNext={() => {
+          beginNextRoundMusic();
           setWinOpen(false);
           setSelectedId(null);
           setActiveDrawer(0);
           patch({ level: save.level + 1, done: [], mistakes: 0, hintsUsed: 0, elapsed: 0 });
         }}
         onNewSeed={() => {
+          beginNextRoundMusic();
           setWinOpen(false);
           fresh(save.mode, `run-${Date.now().toString(36)}`, 0);
         }}

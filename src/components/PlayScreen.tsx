@@ -330,7 +330,9 @@ export function PlayScreen({
   }
   const eyebrow = mode === 'campaign'
     ? `Level ${level.index + 1} · ${level.short}`
-    : `Round ${level.index + 1} of 3 · ${level.short}`;
+    : mode === 'endless'
+      ? `Round ${level.index + 1} · ${level.short}`
+      : `Round ${level.index + 1} of 3 · ${level.short}`;
 
   return (
     <section className="screen play" style={{ '--accent': level.accent, '--accent-deep': level.accentDeep } as CSSProperties}>
@@ -355,9 +357,11 @@ export function PlayScreen({
             <div className={glint ? 'progress-fill is-glint' : 'progress-fill'} style={{ width: `${percent}%` }} />
           </div>
         </div>
-        <div className={lowTime ? 'clock is-low' : 'clock'} role="timer" aria-live={lowTime ? 'assertive' : 'off'} aria-label={`${formatClock(timeLeft)} left`}>
-          <span aria-hidden="true">⏱</span> {formatClock(timeLeft)}
-        </div>
+        {mode === 'endless' ? null : (
+          <div className={lowTime ? 'clock is-low' : 'clock'} role="timer" aria-live={lowTime ? 'assertive' : 'off'} aria-label={`${formatClock(timeLeft)} left`}>
+            <span aria-hidden="true">⏱</span> {formatClock(timeLeft)}
+          </div>
+        )}
         <button type="button" className="text-button reset-play" onClick={onResetRequest}>Start over</button>
       </div>
 

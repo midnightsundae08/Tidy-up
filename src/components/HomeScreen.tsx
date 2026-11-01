@@ -5,11 +5,13 @@ export function HomeScreen({
   onContinue,
   onCampaign,
   onChallenges,
+  onEndless,
 }: {
   hasSave: boolean;
   onContinue: () => void;
   onCampaign: () => void;
   onChallenges: () => void;
+  onEndless: () => void;
 }) {
   return (
     <section className="screen home" aria-label="Game introduction">
@@ -22,6 +24,7 @@ export function HomeScreen({
             {hasSave ? 'Continue' : 'Start tidying'} <span aria-hidden="true">→</span>
           </button>
           <button type="button" className="secondary-button" onClick={onCampaign}>Campaign</button>
+          <button type="button" className="secondary-button" onClick={onEndless}>Endless</button>
           <button type="button" className="secondary-button" onClick={onChallenges}>Challenges</button>
         </div>
       </div>
