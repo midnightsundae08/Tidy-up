@@ -75,6 +75,35 @@ svg { display: block; }
 .sound-button[aria-pressed="false"] { background: #f6ecdf; }
 
 .screen { animation: fadeIn 280ms ease; }
+.title-screen {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 48px);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 0 64px;
+}
+.title-broom {
+  position: absolute;
+  width: min(520px, 78vw);
+  height: auto;
+  right: 6%;
+  bottom: -6%;
+  opacity: 0.28;
+  transform: rotate(-16deg);
+  pointer-events: none;
+  z-index: 0;
+}
+.title-screen h1,
+.title-screen .title-progress,
+.title-screen .primary-button { position: relative; z-index: 1; }
+.title-screen h1 { max-width: none; margin-bottom: 28px; font-size: clamp(72px, 12vw, 128px); }
+.title-progress { width: min(420px, 100%); margin-bottom: 22px; }
+.title-progress .title-progress-fill { transition: width 120ms linear; }
+.title-screen .primary-button:disabled { opacity: 0.55; box-shadow: none; transform: none; }
 .eyebrow { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--text); }
 h1 { font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -0.03em; font-size: clamp(36px, 5vw, 58px); line-height: 1.05; margin: 10px 0; color: var(--ink); }
 h1 em { font-style: italic; font-weight: 400; color: #2f6d58; }

@@ -98,6 +98,7 @@ const MODE_LABEL: Record<Mode, string> = {
   peek: 'One peek',
   mixed: 'Mixed cabinet',
   perfect: 'Perfect fit',
+  endless: 'Endless',
 };
 
 export function WinDialog({
@@ -121,7 +122,7 @@ export function WinDialog({
 }) {
   const ref = useFocusTrap(open);
   const stars = mode === 'perfect' ? tidyStars(mistakes) : 3;
-  const lastRound = mode !== 'campaign' && level.index >= 2;
+  const lastRound = mode !== 'campaign' && mode !== 'endless' && level.index >= 2;
   useEffect(() => {
     if (!open || reducedMotion()) return;
     const layer = document.getElementById('confetti');
@@ -160,7 +161,10 @@ export function WinDialog({
         <div className="eyebrow">{mode === 'perfect' ? `${stars} tidy ${stars === 1 ? 'star' : 'stars'}` : 'Sweet satisfaction'}</div>
         <h2 id="winTitle">Everything is <em>in its place.</em></h2>
         <p>{level.win}</p>
-        <p className="win-mode">{MODE_LABEL[mode]} · {level.items.length} / {level.items.length} · {formatClock(timeLeft)} to spare</p>
+        <p className="win-mode">
+          {MODE_LABEL[mode]} · {level.items.length} / {level.items.length}
+          {mode === 'endless' ? ` · Round ${level.index + 1}` : ` · ${formatClock(timeLeft)} to spare`}
+        </p>
         <button type="button" className="primary-button" onClick={lastRound ? onNewSeed : onNext}>
           {nextLabel} <span aria-hidden="true">{lastRound ? '↻' : '→'}</span>
         </button>

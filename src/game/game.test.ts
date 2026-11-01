@@ -221,6 +221,28 @@ describe('clutter', () => {
     expect(getLevel('campaign', CAMPAIGN_SEED, 9).clutter.length).toBeGreaterThan(getLevel('campaign', CAMPAIGN_SEED, 2).clutter.length);
   });
 
+  it('deals a stable untimed endless run that keeps going', () => {
+    const first = getLevel('endless', 'run-endless', 0);
+    const later = getLevel('endless', 'run-endless', 12);
+    expect(getLevel('endless', 'run-endless', 0)).toEqual(first);
+    expect(later.items.length).toBeGreaterThan(first.items.length);
+    expect(later.index).toBe(12);
+    const store = memory();
+    const save = {
+      v: 2 as const,
+      mode: 'endless' as const,
+      seed: 'run-endless',
+      level: 12,
+      done: [later.items[0].id],
+      mistakes: 0,
+      hintsUsed: 0,
+      muted: false,
+      elapsed: 0,
+    };
+    expect(writeSave(store, save)).toBe('saved');
+    expect(readSave(store).save).toMatchObject({ mode: 'endless', level: 12, done: [later.items[0].id] });
+  });
+
   it('never lets clutter count as a placement', () => {
     const level = handmade[0];
     expect(evaluatePlace(level, new Set(), 'clutter-rag-1', 0, 'hammer', 'slot')).toBe('missing');

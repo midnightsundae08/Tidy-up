@@ -11,7 +11,7 @@ export type KeyValueStore = {
 const SAVE_V2 = 'everything-in-its-place-save-v2';
 const SAVE_V1 = 'everything-in-its-place-save-v1';
 
-const MODES: Mode[] = ['campaign', 'silhouette', 'peek', 'mixed', 'perfect'];
+const MODES: Mode[] = ['campaign', 'silhouette', 'peek', 'mixed', 'perfect', 'endless'];
 
 export function emptySave(muted = false): SaveData {
   return {
@@ -55,7 +55,8 @@ function sanitize(data: unknown): SaveData | null {
   const raw = data as Partial<SaveData>;
   if (raw.v !== 2 || typeof raw.mode !== 'string' || !MODES.includes(raw.mode)) return null;
   if (typeof raw.seed !== 'string' || raw.seed.length === 0 || raw.seed.length > 80) return null;
-  if (typeof raw.level !== 'number' || !Number.isInteger(raw.level) || raw.level < 0 || raw.level > 200) return null;
+  const levelCap = raw.mode === 'endless' ? 100000 : 200;
+  if (typeof raw.level !== 'number' || !Number.isInteger(raw.level) || raw.level < 0 || raw.level > levelCap) return null;
   const level = getLevel(raw.mode, raw.seed, raw.level);
   const valid = new Set(level.items.map((item) => item.id));
   const done = Array.isArray(raw.done)

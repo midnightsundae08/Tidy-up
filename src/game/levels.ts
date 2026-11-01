@@ -7,5 +7,6 @@ export function getLevel(mode: Mode, seed: string, index: number): Level {
   if (mode === 'campaign' && index === 0) return handmade[0];
   if (mode === 'campaign' && index === 1) return handmade[1];
   if (mode === 'campaign') return campaignLevel(index);
+  if (mode === 'endless') return { ...generateLevel(seed, index, 'endless'), index };
   return { ...generateLevel(seed, index + 4, mode), index };
 }
